@@ -32,6 +32,37 @@ CATEGORIES = [
     }
 ]
 
+NOTES = [
+    {
+        "id": uuid.uuid4().hex,
+        "id_user": USERS[0]["id"],
+        "id_category": CATEGORIES[3]["id"],
+        "datetime": "2022.10.10 14:20",
+        "sum": "400"
+    },
+    {
+        "id": uuid.uuid4().hex,
+        "id_user": USERS[0]["id"],
+        "id_category": CATEGORIES[0]["id"],
+        "datetime": "2022.10.10 15:55",
+        "sum": "100"
+    },
+    {
+        "id": uuid.uuid4().hex,
+        "id_user": USERS[1]["id"],
+        "id_category": CATEGORIES[2]["id"],
+        "datetime": "2022.11.10 12:00",
+        "sum": "800"
+    },
+    {
+        "id": uuid.uuid4().hex,
+        "id_user": USERS[1]["id"],
+        "id_category": CATEGORIES[1]["id"],
+        "datetime": "2022.11.10 12:20",
+        "sum": "300"
+    }
+]
+
 
 @app.route("/")
 def default_page():
@@ -57,3 +88,11 @@ def create_category():
     CATEGORIES.append(new_category)
     print(CATEGORIES)
     return jsonify(new_category)
+
+
+@app.route("/newNote", methods=['POST'])
+def create_note():
+    new_note = request.get_json()
+    NOTES.append(new_note)
+    print(NOTES)
+    return jsonify(new_note)
