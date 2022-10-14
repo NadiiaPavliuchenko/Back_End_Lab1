@@ -96,3 +96,22 @@ def create_note():
     NOTES.append(new_note)
     print(NOTES)
     return jsonify(new_note)
+
+
+def make_secure(func):
+    @app.route("/getNoteByUser/<username>")
+    def secure_function(username):
+        us_list = list(filter(lambda user: user["name"] == username, USERS))
+        print(len(us_list))
+        if len(us_list) != 0:
+            id_user = us_list[0]["id"]
+            return func(id_user)
+        else:
+            return f"no such username"
+    return secure_function
+
+
+@make_secure
+def get_note_byUser(id_user):
+    us_note = list(filter(lambda user: user["id_user"] == id_user, NOTES))
+    return jsonify(us_note)
