@@ -51,3 +51,9 @@ def get_categories():
     return jsonify({"categories": CATEGORIES})
 
 
+@app.route("/newCategory", methods=['POST'])
+def create_category():
+    new_category = request.get_json()
+    CATEGORIES.append(new_category)
+    print(CATEGORIES)
+    return jsonify(new_category)
