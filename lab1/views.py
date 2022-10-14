@@ -13,6 +13,25 @@ USERS = [
     }
 ]
 
+CATEGORIES = [
+    {
+        "id": uuid.uuid4().hex,
+        "name": "clothes"
+    },
+    {
+        "id": uuid.uuid4().hex,
+        "name": "studying"
+    },
+    {
+        "id": uuid.uuid4().hex,
+        "name": "bills"
+    },
+    {
+        "id": uuid.uuid4().hex,
+        "name": "health"
+    }
+]
+
 
 @app.route("/")
 def default_page():
@@ -25,3 +44,10 @@ def create_user():
     USERS.append(new_user)
     print(USERS)
     return jsonify(new_user)
+
+
+@app.route("/categories")
+def get_categories():
+    return jsonify({"categories": CATEGORIES})
+
+
