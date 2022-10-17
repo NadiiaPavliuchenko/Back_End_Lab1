@@ -1,7 +1,7 @@
-from lab1 import app
+from npavlbackendlab1 import app
 from flask import jsonify, request
 from functools import wraps
-from lab1 import data
+from npavlbackendlab1 import data
 
 
 @app.route("/")
