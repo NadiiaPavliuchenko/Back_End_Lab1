@@ -4,6 +4,7 @@ from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask import jsonify, request, abort, make_response
 from npavlbackendlab1.data import CATEGORIES
+from npavlbackendlab1.schema import Category_schema
 
 blp = Blueprint("newCategory", __name__)
 
@@ -27,12 +28,10 @@ class NewCategory(MethodView):
     def get(self):
         return CATEGORIES
 
-    def post(self):
-        new_category = request.get_json()
+    @blp.arguments(Category_schema)
+    def post(self, new_category):
         categoryname = new_category["name"]
         cat_list = list(filter(lambda newCat: newCat["name"] == categoryname, CATEGORIES))
-        if "name" not in new_category:
-            abort(make_response(jsonify(error='name wasn`t given'), 400))
         if len(cat_list) != 0:
             abort(make_response(jsonify(error='db contains such category'), 400))
         categooryId = uuid.uuid4().hex

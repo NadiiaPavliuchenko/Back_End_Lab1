@@ -5,6 +5,7 @@ from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask import jsonify, request, abort, make_response
 from npavlbackendlab1.data import NOTES, USERS, CATEGORIES
+from npavlbackendlab1.schema import Note_schema
 
 blp = Blueprint("newNote", __name__)
 
@@ -52,14 +53,8 @@ class NewUser(MethodView):
     def get(self):
         return NOTES
 
-    def post(self):
-        new_note = request.get_json()
-        if (
-            "id_user" not in new_note or
-            "id_category" not in new_note or
-            "sum" not in new_note
-        ):
-            abort(make_response(jsonify(error='Bad Request not all required options were given'), 400))
+    @blp.arguments(Note_schema)
+    def post(self, new_note):
         us_list = list(filter(lambda user: user["id"] == new_note["id_user"], USERS))
         cat_list = list(filter(lambda category: category["id"] == new_note["id_category"], CATEGORIES))
 

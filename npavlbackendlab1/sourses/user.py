@@ -4,6 +4,7 @@ from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask import jsonify, request, abort, make_response
 from npavlbackendlab1.data import USERS
+from npavlbackendlab1.schema import User_schema
 
 blp = Blueprint("newUser", __name__)
 
@@ -27,11 +28,9 @@ class NewUser(MethodView):
     def get(self):
         return USERS
 
-    def post(self):
-        new_user = request.get_json()
+    @blp.arguments(User_schema)
+    def post(self, new_user):
         username = new_user["name"]
-        if "name" not in new_user:
-            abort(make_response(jsonify(error='name was not given'), 400))
         us_list = list(filter(lambda nUser: nUser["name"] == username, USERS))
         if len(us_list) != 0:
             abort(make_response(jsonify(error='db contains such name'), 400))
