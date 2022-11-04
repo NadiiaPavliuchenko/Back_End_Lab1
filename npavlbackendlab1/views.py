@@ -1,7 +1,20 @@
 from npavlbackendlab1 import app
 from flask import jsonify, request
+from flask_smorest import Api
 from functools import wraps
 from npavlbackendlab1 import data
+
+from npavlbackendlab1.sourses.user import blp as UsersBlp
+
+app.config["PROPAGATE_EXCEPTIONS"] = True
+app.config["API_TITLE"] = "labs rest api"
+app.config["API_VERSION"] = "v1"
+app.config["OPENAPI_VERSION"] = "3.0.3"
+app.config["OPENAPI_URL_PREFIX"] = "/"
+
+api = Api(app)
+
+api.register_blueprint(UsersBlp)
 
 
 @app.route("/")
@@ -9,15 +22,7 @@ def default_page():
     return "Default page"
 
 
-@app.route("/newUser", methods=['POST'])
-def create_user():
-    new_user = request.get_json()
-    data.USERS.append(new_user)
-    print(data.USERS)
-    return jsonify(new_user)
-
-
-@app.route("/categories")
+"""@app.route("/categories")
 def get_categories():
     return jsonify({"categories": data.CATEGORIES})
 
@@ -76,4 +81,4 @@ def check_category(func):
 def get_Note(id_user, id_category):
     us_note = list(filter(lambda user: user["id_user"] == id_user, data.NOTES))
     us_cat_note = list(filter(lambda cat: cat["id_category"] == id_category, us_note))
-    return jsonify(us_cat_note)
+    return jsonify(us_cat_note)"""
