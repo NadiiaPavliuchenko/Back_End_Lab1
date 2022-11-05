@@ -21,3 +21,15 @@ class Note_schema(Schema):
     id_user = fields.Int(required=True)
     id_category = fields.Int(required=True)
     sum = fields.Float(required=True)
+
+
+class Score_schema(Schema):
+    id = fields.Int(dump_only=True)
+    id_user = fields.Int(required=True)
+    sum = fields.Float(required=True)
+
+
+class ScoreQuery_schema(Schema):
+    username = fields.Str(required=True)
+    new_sum = fields.Float()
+

@@ -5,6 +5,7 @@ from npavlbackendlab1.data import db
 from npavlbackendlab1.sourses.user import blp as UsersBlp
 from npavlbackendlab1.sourses.categories import blp as CategoryBlp
 from npavlbackendlab1.sourses.notes import blp as NoteBlp
+from npavlbackendlab1.sourses.score import blp as ScoreBlp
 
 
 app.config["PROPAGATE_EXCEPTIONS"] = True
@@ -25,6 +26,7 @@ with app.app_context():
 api.register_blueprint(UsersBlp)
 api.register_blueprint(CategoryBlp)
 api.register_blueprint(NoteBlp)
+api.register_blueprint(ScoreBlp)
 
 
 @app.route("/")

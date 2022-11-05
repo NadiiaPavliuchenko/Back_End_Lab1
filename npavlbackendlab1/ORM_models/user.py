@@ -7,4 +7,5 @@ class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), unique=True, nullable=False)
 
-    record = db.relationship("NoteModel", back_populates="user", lazy="dynamic")
+    note = db.relationship("NoteModel", back_populates="user", lazy="dynamic")
+    score = db.relationship("ScoreModel", back_populates="user", lazy="dynamic")
