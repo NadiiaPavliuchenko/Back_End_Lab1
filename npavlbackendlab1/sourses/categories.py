@@ -1,9 +1,10 @@
-import uuid
-
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask import jsonify, abort, make_response
-from npavlbackendlab1.data import CATEGORIES
+from sqlalchemy.exc import IntegrityError
+
+from npavlbackendlab1.ORM_models import CategoryModel
+from npavlbackendlab1.data import db
 from npavlbackendlab1.schema import Category_schema
 
 blp = Blueprint("newCategory", __name__)
@@ -13,31 +14,23 @@ blp = Blueprint("newCategory", __name__)
 class GetCategories(MethodView):
     @blp.response(200, Category_schema)
     def get(self, categoryname):
-        cat_key = 0
-        for i in range(len(CATEGORIES)):
-            if categoryname == CATEGORIES[i]['name']:
-                if CATEGORIES[i]['name'] != 0:
-                    cat_key = CATEGORIES[i]['id']
-        if cat_key != 0:
-            return jsonify(cat_key)
-        else:
-            abort(make_response(jsonify(error='no such category'), 404))
+        category = CategoryModel.query.filter_by(name=categoryname).first_or_404()
+        return category
 
 
 @blp.route("/newCategory")
 class NewCategory(MethodView):
     @blp.response(200, Category_schema(many=True))
     def get(self):
-        return CATEGORIES
+        return CategoryModel.query.all()
 
     @blp.arguments(Category_schema)
     @blp.response(200, Category_schema)
     def post(self, new_category):
-        categoryname = new_category["name"]
-        cat_list = list(filter(lambda newCat: newCat["name"] == categoryname, CATEGORIES))
-        if len(cat_list) != 0:
-            abort(make_response(jsonify(error='db contains such category'), 400))
-        categooryId = uuid.uuid4().hex
-        category = {"id": categooryId, "name": categoryname}
-        CATEGORIES.append(category)
-        return jsonify(category)
+        category = CategoryModel(**new_category)
+        try:
+            db.session.add(category)
+            db.session.commit()
+        except IntegrityError:
+            abort(make_response(jsonify(error='such category consists in db'), 400))
+        return category

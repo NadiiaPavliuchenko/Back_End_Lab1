@@ -2,12 +2,12 @@ from marshmallow import Schema, fields
 
 
 class User_schema(Schema):
-    id = fields.Str(dump_only=True)
+    id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
 
 
 class Category_schema(Schema):
-    id = fields.Str(dump_only=True)
+    id = fields.Int(dump_only=True)
     name = fields.Str(reguired=True)
 
 
@@ -17,7 +17,7 @@ class NoteQuery_schema(Schema):
 
 
 class Note_schema(Schema):
-    id = fields.Str(dump_only=True)
-    id_user = fields.Str(required=True)
-    id_category = fields.Str(required=True)
+    id = fields.Int(dump_only=True)
+    id_user = fields.Int(required=True)
+    id_category = fields.Int(required=True)
     sum = fields.Float(required=True)

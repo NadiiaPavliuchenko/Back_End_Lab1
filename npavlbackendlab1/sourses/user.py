@@ -1,9 +1,10 @@
-import uuid
-
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask import jsonify, abort, make_response
-from npavlbackendlab1.data import USERS
+from sqlalchemy.exc import IntegrityError
+
+from npavlbackendlab1.ORM_models.user import UserModel
+from npavlbackendlab1.data import db
 from npavlbackendlab1.schema import User_schema
 
 blp = Blueprint("newUser", __name__)
@@ -13,31 +14,23 @@ blp = Blueprint("newUser", __name__)
 class GetUser(MethodView):
     @blp.response(200, User_schema)
     def get(self, username):
-        user_key = 0
-        for i in range(len(USERS)):
-            if username == USERS[i]['name']:
-                if USERS[i]['name'] != 0:
-                    user_key = USERS[i]['id']
-        if user_key != 0:
-            return jsonify(user_key)
-        else:
-            abort(make_response(jsonify(error='no such category'), 404))
+        user = UserModel.query.filter_by(name=username).first_or_404()
+        return user
 
 
 @blp.route("/newUser")
 class NewUser(MethodView):
     @blp.response(200, User_schema(many=True))
     def get(self):
-        return USERS
+        return UserModel.query.all()
 
     @blp.arguments(User_schema)
     @blp.response(200, User_schema)
     def post(self, new_user):
-        username = new_user["name"]
-        us_list = list(filter(lambda nUser: nUser["name"] == username, USERS))
-        if len(us_list) != 0:
-            abort(make_response(jsonify(error='db contains such name'), 400))
-        userId = uuid.uuid4().hex
-        user = {"id": userId, "name": username}
-        USERS.append(user)
-        return jsonify(user)
+        user = UserModel(**new_user)
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except IntegrityError:
+            abort(make_response(jsonify(error='such username consists in db'), 400))
+        return user
