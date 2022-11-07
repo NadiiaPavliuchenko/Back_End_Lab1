@@ -3,9 +3,9 @@ from flask.views import MethodView
 from flask import jsonify, abort, make_response
 from sqlalchemy.exc import IntegrityError
 
-from npavlbackendlab1.ORM_models import NoteModel, UserModel, CategoryModel, ScoreModel
+from npavlbackendlab1.ORM_models import UserModel, ScoreModel
 from npavlbackendlab1.data import db
-from npavlbackendlab1.schema import ScoreQuery_schema, Score_schema
+from npavlbackendlab1.schema import ScoreQuery_schema, Score_schema, ChangeScore_schema
 
 blp = Blueprint("newScore", __name__)
 
@@ -40,7 +40,10 @@ class addScore(MethodView):
             abort(make_response(jsonify(error='incorrect input'), 400))
         return score
 
-    @blp.arguments(ScoreQuery_schema, location="query", as_kwargs=True)
+
+@blp.route("/changeScoreByUser")
+class changeScore(MethodView):
+    @blp.arguments(ChangeScore_schema, location="query", as_kwargs=True)
     @blp.response(200, Score_schema(many=True))
     def post(self, **kwargs):
         username = kwargs.get("username")
@@ -51,11 +54,11 @@ class addScore(MethodView):
         user = UserModel.query.filter_by(name=username).first_or_404()
         user_id = user.id
 
-        new_sum = kwargs.get("new_sum")
+        add_sum = kwargs.get("add_sum")
 
-        if new_sum:
+        if add_sum:
             userscore = ScoreModel.query.filter(ScoreModel.id_user == user_id).first_or_404()
-            userscore.sum += new_sum
+            userscore.sum += add_sum
             db.session.commit()
 
         query = ScoreModel.query.filter(ScoreModel.id_user == user_id)

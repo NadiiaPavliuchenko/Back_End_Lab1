@@ -31,5 +31,10 @@ class Score_schema(Schema):
 
 class ScoreQuery_schema(Schema):
     username = fields.Str(required=True)
-    new_sum = fields.Float()
+    add_sum = fields.Float()
+
+
+class ChangeScore_schema(Schema):
+    username = fields.Str(required=True)
+    add_sum = fields.Float(required=True)
 

@@ -3,7 +3,7 @@ from flask.views import MethodView
 from flask import jsonify, abort, make_response
 from sqlalchemy.exc import IntegrityError
 
-from npavlbackendlab1.ORM_models import NoteModel, UserModel, CategoryModel
+from npavlbackendlab1.ORM_models import NoteModel, UserModel, CategoryModel, ScoreModel
 from npavlbackendlab1.data import db
 from npavlbackendlab1.schema import Note_schema, NoteQuery_schema
 
@@ -44,8 +44,16 @@ class Note(MethodView):
     @blp.response(200, Note_schema)
     def post(self, new_note):
         note = NoteModel(**new_note)
+        new_sum = note.sum
+        user_id = note.id_user
+
+        userscore = ScoreModel.query.filter(ScoreModel.id_user == user_id).first_or_404()
+
         try:
             db.session.add(note)
+            userscore.sum -= new_sum
+            if userscore.sum < 0:
+                abort(make_response(jsonify(error='you don`t have enough money'), 400))
             db.session.commit()
         except IntegrityError:
             abort(make_response(jsonify(error='incorrect input'), 400))
