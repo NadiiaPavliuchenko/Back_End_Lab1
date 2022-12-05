@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask import jsonify, abort, make_response
@@ -11,6 +12,7 @@ blp = Blueprint("newCategory", __name__)
 
 
 @blp.route("/category/<string:categoryname>")
+@jwt_required()
 class GetCategories(MethodView):
     @blp.response(200, Category_schema)
     def get(self, categoryname):
@@ -19,6 +21,7 @@ class GetCategories(MethodView):
 
 
 @blp.route("/newCategory")
+@jwt_required()
 class NewCategory(MethodView):
     @blp.response(200, Category_schema(many=True))
     def get(self):

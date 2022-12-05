@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask import jsonify, abort, make_response
@@ -11,6 +12,7 @@ blp = Blueprint("newNote", __name__)
 
 
 @blp.route("/getNote")
+@jwt_required()
 class GetNote(MethodView):
     @blp.arguments(NoteQuery_schema, location="query", as_kwargs=True)
     @blp.response(200, Note_schema(many=True))
@@ -35,6 +37,7 @@ class GetNote(MethodView):
 
 
 @blp.route("/newNote")
+@jwt_required()
 class Note(MethodView):
     @blp.response(200, Note_schema(many=True))
     def get(self):

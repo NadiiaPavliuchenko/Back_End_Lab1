@@ -1,3 +1,4 @@
+from flask_jwt_extended import jwt_required
 from flask_smorest import Blueprint
 from flask.views import MethodView
 from flask import jsonify, abort, make_response
@@ -11,6 +12,7 @@ blp = Blueprint("newScore", __name__)
 
 
 @blp.route("/score")
+@jwt_required()
 class getScore(MethodView):
     @blp.arguments(ScoreQuery_schema, location="query", as_kwargs=True)
     @blp.response(200, Score_schema(many=True))
@@ -28,6 +30,7 @@ class getScore(MethodView):
 
 
 @blp.route("/addScore")
+@jwt_required()
 class addScore(MethodView):
     @blp.arguments(Score_schema)
     @blp.response(200, Score_schema)
@@ -42,6 +45,7 @@ class addScore(MethodView):
 
 
 @blp.route("/changeScoreByUser")
+@jwt_required()
 class changeScore(MethodView):
     @blp.arguments(ChangeScore_schema, location="query", as_kwargs=True)
     @blp.response(200, Score_schema(many=True))

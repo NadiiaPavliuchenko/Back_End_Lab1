@@ -4,6 +4,7 @@ from marshmallow import Schema, fields
 class User_schema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True)
+    password = fields.Str(required=True)
 
 
 class Category_schema(Schema):
