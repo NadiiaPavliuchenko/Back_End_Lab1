@@ -11,9 +11,9 @@ from npavlbackendlab1.schema import ScoreQuery_schema, Score_schema, ChangeScore
 blp = Blueprint("newScore", __name__)
 
 
-@blp.route("/score")
 @jwt_required()
-class getScore(MethodView):
+@blp.route("/score")
+class GetScore(MethodView):
     @blp.arguments(ScoreQuery_schema, location="query", as_kwargs=True)
     @blp.response(200, Score_schema(many=True))
     def get(self, **kwargs):
@@ -29,9 +29,9 @@ class getScore(MethodView):
         return query.all()
 
 
-@blp.route("/addScore")
 @jwt_required()
-class addScore(MethodView):
+@blp.route("/addScore")
+class AddScore(MethodView):
     @blp.arguments(Score_schema)
     @blp.response(200, Score_schema)
     def post(self, new_score):
@@ -44,9 +44,9 @@ class addScore(MethodView):
         return score
 
 
-@blp.route("/changeScoreByUser")
 @jwt_required()
-class changeScore(MethodView):
+@blp.route("/changeScoreByUser")
+class ChangeScore(MethodView):
     @blp.arguments(ChangeScore_schema, location="query", as_kwargs=True)
     @blp.response(200, Score_schema(many=True))
     def post(self, **kwargs):

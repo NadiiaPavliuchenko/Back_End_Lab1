@@ -11,8 +11,8 @@ from npavlbackendlab1.schema import Note_schema, NoteQuery_schema
 blp = Blueprint("newNote", __name__)
 
 
-@blp.route("/getNote")
 @jwt_required()
+@blp.route("/getNote")
 class GetNote(MethodView):
     @blp.arguments(NoteQuery_schema, location="query", as_kwargs=True)
     @blp.response(200, Note_schema(many=True))
@@ -32,12 +32,11 @@ class GetNote(MethodView):
             category = CategoryModel.query.filter_by(name=categoryname).first_or_404()
             category_id = category.id
             query = query.filter(NoteModel.id_category == category_id)
-
         return query.all()
 
 
-@blp.route("/newNote")
 @jwt_required()
+@blp.route("/newNote")
 class Note(MethodView):
     @blp.response(200, Note_schema(many=True))
     def get(self):
@@ -60,5 +59,5 @@ class Note(MethodView):
             db.session.commit()
         except IntegrityError:
             abort(make_response(jsonify(error='incorrect input'), 400))
-        return note
+        return jsonify(note)
 

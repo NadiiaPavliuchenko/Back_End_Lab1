@@ -39,3 +39,4 @@ class ChangeScore_schema(Schema):
     username = fields.Str(required=True)
     add_sum = fields.Float(required=True)
 
+

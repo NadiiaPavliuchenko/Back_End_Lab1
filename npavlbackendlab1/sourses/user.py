@@ -38,8 +38,25 @@ class NewUser(MethodView):
         return user
 
 
+@jwt_required()
 @blp.route("/allUsers")
 class Users(MethodView):
     @blp.response(200, User_schema(many=True))
     def get(self):
         return UserModel.query.all()
+
+
+@blp.route("/loginUser")
+class LoginUser(MethodView):
+    @blp.arguments(User_schema)
+    @blp.response(200, User_schema)
+    def get(self, login):
+        user = UserModel.query.filter_by(name=login["name"]).first()
+
+        if user and pbkdf2_sha256.verify(login["password"], user.password):
+            access_token = create_access_token(identity=user.id)
+            return (
+                jsonify({"access_token": access_token})
+            )
+        else:
+            abort(make_response(jsonify(error='no such user in db'), 400))
